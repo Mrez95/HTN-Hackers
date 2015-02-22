@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 
 public class MainActivity extends Activity {
@@ -28,7 +29,7 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
         Firebase.setAndroidContext(this);
 
-        // retrieve data from Firebase server
+        // retrieve user info data from Firebase server
         getData();
     }
 
@@ -65,50 +66,44 @@ public class MainActivity extends Activity {
         ref.addChildEventListener(new ChildEventListener() {
 
             // Attach an listener to read the data at our posts reference
-
             @Override
             public void onChildAdded(DataSnapshot snapshot, String previousChildKey) {
-                ArrayList data = (ArrayList) snapshot.getValue();
-                //System.out.println("Name: " + newPost.get("name"));
-                //String data = (String) snapshot.child("email").getValue();
-                //Toast.makeText(MainActivity.this, "Connected to Firebase", Toast.LENGTH_SHORT).show();
+                List<Objects> data =  (List<Objects>) snapshot.getValue();
 
                 for(Object obj : data) {
+
+                    // Firebase Object -> JSON
                     Gson gson = new Gson();
                     String json = gson.toJson(obj);
-                    System.out.println("MREZ! " + json);
-                    //Gson gson2 = new Gson();
 
-                    //convert the json string back to object
-//                    UserProfile users = gson2.fromJson(json, UserProfile.class);
-//                    System.out.println("MREZ! " + users);
-                    //UserProfile profile = gson.fromJson((String)obj, UserProfile.class);
-                    //profile.getCompany();
-                  // System.out.println(obj);
-//                    System.out.println("FIRST -- " + obj);
+                    /**
+                     * JSON -> Object
+                     *
+                     * let's store Firebase data in our own class for easy member access
+                     */
 
+                    UserProfile users = gson.fromJson(json, UserProfile.class);
+                    List<Skills> skills = users.getSkills();
+
+                    // retrieve and store list of all skills for current user
+                    for(Skills s : skills)
+                    {
+                        System.out.println(s.getName());
+                    }
                 }
             }
 
             @Override
-            public void onChildChanged(DataSnapshot snapshot, String previousChildKey) {
-
-            }
+            public void onChildChanged(DataSnapshot snapshot, String previousChildKey) {}
 
             @Override
-            public void onChildRemoved(DataSnapshot snapshot) {
-
-            }
+            public void onChildRemoved(DataSnapshot snapshot) {}
 
             @Override
-            public void onChildMoved(DataSnapshot snapshot,String previousChildName) {
-
-            }
+            public void onChildMoved(DataSnapshot snapshot,String previousChildName) {}
 
             @Override
-            public void onCancelled(FirebaseError firebaseError) {
-
-            }
+            public void onCancelled(FirebaseError firebaseError) {}
         });
     }
 }
