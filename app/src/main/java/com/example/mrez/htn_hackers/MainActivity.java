@@ -34,9 +34,8 @@ public class MainActivity extends Activity {
         createMapView();
         addMarker();
 
-        Firebase.setAndroidContext(this);
-
         // retrieve user data from Firebase server
+        Firebase.setAndroidContext(this);
         getData();
     }
 
@@ -95,9 +94,10 @@ public class MainActivity extends Activity {
                     // retrieve and store list of all skills for current user
                     for(Skills s : skills)
                     {
-                        System.out.println(s.getName());
+                        //System.out.println(s.getName());
                     }
                 }
+                System.out.println("done!");
             }
 
             @Override
