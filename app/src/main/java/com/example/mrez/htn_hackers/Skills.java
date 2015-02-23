@@ -3,7 +3,7 @@ package com.example.mrez.htn_hackers;
 public class Skills {
 
     private String name;
-    private Number rating;
+    private int rating;
 
     /**
      * @Accessors
@@ -11,7 +11,7 @@ public class Skills {
     public String getName(){
         return name;
     }
-    public Number getRating(){
+    public int getRating(){
         return rating;
     }
 
@@ -21,7 +21,7 @@ public class Skills {
     public void setName(String name){
         this.name = name;
     }
-    public void setRating(Number rating){
+    public void setRating(int rating){
         this.rating = rating;
     }
 }

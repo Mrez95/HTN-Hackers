@@ -11,9 +11,13 @@ import com.firebase.client.ChildEventListener;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.gson.Gson;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import com.google.android.gms.maps.*;
 import com.google.android.gms.maps.model.LatLng;
@@ -22,17 +26,18 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 public class MainActivity extends Activity {
 
-    /** Local variables **/
+    /** Global variables **/
     GoogleMap googleMap;
+    Map<String,BitmapDescriptor> map = new HashMap<String,BitmapDescriptor>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        setHashMap();
 
         // create map view
         createMapView();
-        addMarker();
 
         // retrieve user data from Firebase server
         Firebase.setAndroidContext(this);
@@ -75,10 +80,14 @@ public class MainActivity extends Activity {
             @Override
             public void onChildAdded(DataSnapshot snapshot, String previousChildKey) {
                 List<Objects> data =  (List<Objects>) snapshot.getValue();
-
+                BitmapDescriptor pinColor;
                 for(Object obj : data) {
 
-                    // Firebase Object -> JSON
+                    /**
+                     * Object -> JSON
+                     *
+                     * convert Firebase default object to JSON string which we can serialize later
+                     */
                     Gson gson = new Gson();
                     String json = gson.toJson(obj);
 
@@ -91,13 +100,37 @@ public class MainActivity extends Activity {
                     UserProfile users = gson.fromJson(json, UserProfile.class);
                     List<Skills> skills = users.getSkills();
 
-                    // retrieve and store list of all skills for current user
+                    /**
+                     *  user data information
+                     */
+                    float longitute = users.getLongitude();
+                    float latitude = users.getLatitude();
+                    String name = users.getName();
+                    String company = users.getCompany();
+                    String phone = users.getPhone();
+                    String topSkill = "ANDROID";
+
+                    int highestRating = 0;
+
+                    // traverse user skill list
                     for(Skills s : skills)
                     {
-                        //System.out.println(s.getName());
+                        if (s.getRating() > highestRating){
+                            topSkill = s.getName().toUpperCase();
+                        }
                     }
+
+                    System.out.println("EDDIE EDDIE EDDIE EDDIE");
+                    pinColor = map.get(topSkill);
+
+                    // null check
+                    if (pinColor == null) {
+                        pinColor = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ROSE);
+                    }
+
+                    // drop pin!
+                    addMarker(longitute, latitude, name, company, phone, pinColor);
                 }
-                System.out.println("done!");
             }
 
             @Override
@@ -144,16 +177,44 @@ public class MainActivity extends Activity {
     /**
      * Adds a marker to the map
      */
-    private void addMarker(){
+    private void addMarker(float x, float y, String name, String company, String phone, BitmapDescriptor pinColor){
 
         /** Make sure that the map has been initialised **/
         if(null != googleMap){
             googleMap.addMarker(new MarkerOptions()
-                            .position(new LatLng(0, 0))
-                            .title("Marker")
+                            .icon(pinColor)
+                            .position(new LatLng(x, y))
+                            .title(name)
+                            .snippet("Phone: " + phone + "  | Company: " + company)
                             .draggable(true)
+
             );
         }
+    }
+
+    public void setHashMap(){
+        /**
+         * sets and stores key value pairs for pin color to skills
+         */
+
+        map.put("JS", BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
+        map.put("GO", BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
+        map.put("C", BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_CYAN));
+        map.put("ANDROID", BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
+        map.put("PUBLIC SPEAKING", BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
+        map.put("IOS", BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
+        map.put("ANGULAR", BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE));
+        map.put("C++", BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
+        map.put("HTML/CSS", BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ROSE));
+        map.put("NODEJS", BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_VIOLET));
+        map.put("JAVA", BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW));
+        map.put("PRODUCT DESIGN", BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_CYAN));
+
+    }
+
+    @Override
+    public String toString(){
+        return "";
     }
 }
 

@@ -15,7 +15,7 @@ public class SplashScreen extends Activity {
         Thread startTimer = new Thread(){
             public void run(){
                 try{
-                    sleep(5000);
+                    sleep(2000);
                     Intent loadSplash = new Intent(SplashScreen.this, MainActivity.class);
                     startActivity(loadSplash);
                     finish();
