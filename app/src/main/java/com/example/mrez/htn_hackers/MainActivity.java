@@ -30,10 +30,12 @@ public class MainActivity extends Activity {
     GoogleMap googleMap;
     Map<String,BitmapDescriptor> map = new HashMap<String,BitmapDescriptor>();
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         setHashMap();
 
         // create map view
@@ -120,7 +122,8 @@ public class MainActivity extends Activity {
                         }
                     }
 
-                    System.out.println("EDDIE EDDIE EDDIE EDDIE");
+                    System.out.println("THREADING!");
+
                     pinColor = map.get(topSkill);
 
                     // null check
@@ -129,7 +132,7 @@ public class MainActivity extends Activity {
                     }
 
                     // drop pin!
-                    addMarker(longitute, latitude, name, company, phone, pinColor);
+                    addMarker(longitute, latitude, name, company, phone, pinColor, topSkill);
                 }
             }
 
@@ -177,14 +180,14 @@ public class MainActivity extends Activity {
     /**
      * Adds a marker to the map
      */
-    private void addMarker(float x, float y, String name, String company, String phone, BitmapDescriptor pinColor){
+    private void addMarker(float x, float y, String name, String company, String phone, BitmapDescriptor pinColor, String skill){
 
         /** Make sure that the map has been initialised **/
         if(null != googleMap){
             googleMap.addMarker(new MarkerOptions()
                             .icon(pinColor)
                             .position(new LatLng(x, y))
-                            .title(name)
+                            .title(name + "  [" + skill + "]")
                             .snippet("Phone: " + phone + "  | Company: " + company)
                             .draggable(true)
 
