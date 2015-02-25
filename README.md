@@ -6,9 +6,9 @@ HTN '15 Mobile Interview Challenge
 Native Android mobile application buillt of which displays HTN attendee profile data on a map with real-time pins base off user info.
 
 <div>
-<img src="https://github.com/Mrez95/HTN-Hackers/blob/master/app/src/main/res/drawable/final_smash.jpg" alt="Drawing" width="420" height="720" style="float:left" />
+<img src="https://github.com/Mrez95/HTN-Hackers/blob/master/app/src/main/res/drawable/final_smash.jpg" alt="Drawing" width="300" height="500" style="float:left" />
 
-<img src="https://github.com/Mrez95/HTN-Hackers/blob/master/app/src/main/res/drawable/11004014_944324105579755_773804323_n.jpg" alt="Drawing" width=420" height="720" style="float:right"/>
+<img src="https://github.com/Mrez95/HTN-Hackers/blob/master/app/src/main/res/drawable/11004014_944324105579755_773804323_n.jpg" alt="Drawing" width=300" height="500" style="float:right"/>
 </div>
 <b>Important Considerations</b><br>
 - Is the base specification implemented? <br>
