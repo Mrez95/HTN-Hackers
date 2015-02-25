@@ -15,10 +15,11 @@ import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.gson.Gson;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
+
 import com.google.android.gms.maps.*;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -26,9 +27,11 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 public class MainActivity extends Activity {
 
-    /** Global variables **/
+    /**
+     * Global variables *
+     */
     GoogleMap googleMap;
-    Map<String,BitmapDescriptor> map = new HashMap<String,BitmapDescriptor>();
+    Map<String, BitmapDescriptor> map = new HashMap<String, BitmapDescriptor>();
 
 
     @Override
@@ -37,8 +40,6 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
 
         setHashMap();
-
-        // create map view
         createMapView();
 
         // retrieve user data from Firebase server
@@ -81,48 +82,48 @@ public class MainActivity extends Activity {
             // Attach an listener to read the data at our posts reference
             @Override
             public void onChildAdded(DataSnapshot snapshot, String previousChildKey) {
-                List<Objects> data =  (List<Objects>) snapshot.getValue();
+                ArrayList data = (ArrayList) snapshot.getValue();
                 BitmapDescriptor pinColor;
-                for(Object obj : data) {
+                Gson gson = new Gson();
 
-                    /**
-                     * Object -> JSON
-                     *
-                     * convert Firebase default object to JSON string which we can serialize later
-                     */
-                    Gson gson = new Gson();
-                    String json = gson.toJson(obj);
+                /**
+                 * Object -> JSON
+                 *
+                 * convert Firebase default object to JSON string which we can serialize later
+                 */
 
-                    /**
-                     * JSON -> Object
-                     *
-                     * let's store Firebase data in our own class for easy member access
-                     */
+                String json = gson.toJson(data);
 
-                    UserProfile users = gson.fromJson(json, UserProfile.class);
-                    List<Skills> skills = users.getSkills();
+                /**
+                 * JSON -> Object
+                 *
+                 * let's store Firebase data in our own class for easy member access
+                 */
+
+                Users[] userList = gson.fromJson(json, Users[].class);
+
+                for (Users user : userList){
 
                     /**
                      *  user data information
                      */
-                    float longitute = users.getLongitude();
-                    float latitude = users.getLatitude();
-                    String name = users.getName();
-                    String company = users.getCompany();
-                    String phone = users.getPhone();
+
+                    float longitute = user.getLongitude();
+                    float latitude = user.getLatitude();
+                    String name = user.getName();
+                    String company = user.getCompany();
+                    String phone = user.getPhone();
                     String topSkill = "ANDROID";
+                    List<Skills> skills = user.getSkills();
 
                     int highestRating = 0;
 
                     // traverse user skill list
-                    for(Skills s : skills)
-                    {
-                        if (s.getRating() > highestRating){
+                    for (Skills s : skills) {
+                        if (s.getRating() > highestRating) {
                             topSkill = s.getName().toUpperCase();
                         }
                     }
-
-                    System.out.println("THREADING!");
 
                     pinColor = map.get(topSkill);
 
@@ -133,33 +134,40 @@ public class MainActivity extends Activity {
 
                     // drop pin!
                     addMarker(longitute, latitude, name, company, phone, pinColor, topSkill);
+
                 }
             }
 
-            @Override
-            public void onChildChanged(DataSnapshot snapshot, String previousChildKey) {}
+        @Override
+        public void onChildChanged (DataSnapshot snapshot, String previousChildKey){
+        }
 
-            @Override
-            public void onChildRemoved(DataSnapshot snapshot) {}
+        @Override
+        public void onChildRemoved (DataSnapshot snapshot){
+        }
 
-            @Override
-            public void onChildMoved(DataSnapshot snapshot,String previousChildName) {}
+        @Override
+        public void onChildMoved (DataSnapshot snapshot, String previousChildName){
+        }
 
-            @Override
-            public void onCancelled(FirebaseError firebaseError) {}
-        });
+        @Override
+        public void onCancelled (FirebaseError firebaseError){
+        }
     }
+
+    );
+}
 
     /**
      * Initialises the mapview
      */
-    private void createMapView(){
+    private void createMapView() {
         /**
          * Catch the null pointer exception that
          * may be thrown when initialising the map
          */
         try {
-            if(null == googleMap){
+            if (null == googleMap) {
                 googleMap = ((MapFragment) getFragmentManager().findFragmentById(
                         R.id.mapView)).getMap();
 
@@ -167,12 +175,12 @@ public class MainActivity extends Activity {
                  * If the map is still null after attempted initialisation,
                  * show an error to the user
                  */
-                if(null == googleMap) {
+                if (null == googleMap) {
                     Toast.makeText(getApplicationContext(),
                             "Error creating map", Toast.LENGTH_SHORT).show();
                 }
             }
-        } catch (NullPointerException exception){
+        } catch (NullPointerException exception) {
             Log.e("mapApp", exception.toString());
         }
     }
@@ -180,10 +188,10 @@ public class MainActivity extends Activity {
     /**
      * Adds a marker to the map
      */
-    private void addMarker(float x, float y, String name, String company, String phone, BitmapDescriptor pinColor, String skill){
+    private void addMarker(float x, float y, String name, String company, String phone, BitmapDescriptor pinColor, String skill) {
 
         /** Make sure that the map has been initialised **/
-        if(null != googleMap){
+        if (null != googleMap) {
             googleMap.addMarker(new MarkerOptions()
                             .icon(pinColor)
                             .position(new LatLng(x, y))
@@ -195,7 +203,8 @@ public class MainActivity extends Activity {
         }
     }
 
-    public void setHashMap(){
+    public void setHashMap() {
+
         /**
          * sets and stores key value pairs for pin color to skills
          */
@@ -213,11 +222,6 @@ public class MainActivity extends Activity {
         map.put("JAVA", BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW));
         map.put("PRODUCT DESIGN", BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_CYAN));
 
-    }
-
-    @Override
-    public String toString(){
-        return "";
     }
 }
 

@@ -1,27 +1,31 @@
+
 package com.example.mrez.htn_hackers;
 
-public class Skills {
-
-    private String name;
-    private int rating;
-
-    /**
-     * @Accessors
-     */
-    public String getName(){
-        return name;
-    }
-    public int getRating(){
-        return rating;
-    }
+public class Skills{
+   	private String name;
+   	private float rating;
 
     /**
-     * @Mutators
+     * Accessors
      */
-    public void setName(String name){
-        this.name = name;
+
+ 	public String getName(){
+		return this.name;
+	}
+
+    public float getRating(){
+        return this.rating;
     }
-    public void setRating(int rating){
-        this.rating = rating;
-    }
+
+    /**
+     * Mutators
+     */
+
+	public void setName(String name){
+		this.name = name;
+	}
+
+	public void setRating(float rating){
+		this.rating = rating;
+	}
 }
