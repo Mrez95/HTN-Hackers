@@ -235,12 +235,13 @@ public class MainActivity extends Activity {
      * simple loading overlay on top of main activity
      * dismisses after 3 seconds while data gets retrieved and map populated in the background
      *
-     * LOAD TIME: ~3seconds
+     * LOAD TIME: ~3 seconds
+     * BOOT TIME: ~1 second
      */
     public void loadSplashPage(){
         image = (ImageView) findViewById(R.id.imageView1);
         image.setImageResource(R.drawable.htn_splash);
-        image.postDelayed(new Runnable() { public void run() { image.setVisibility(View.GONE); } }, 3000);
+        image.postDelayed(new Runnable() { public void run() { image.setVisibility(View.GONE); } }, 4000);
     }
 }
 
