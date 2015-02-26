@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.firebase.client.ChildEventListener;
@@ -33,12 +35,17 @@ public class MainActivity extends Activity {
     GoogleMap googleMap;
     Map<String, BitmapDescriptor> map = new HashMap<String, BitmapDescriptor>();
 
+    ImageView image;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // Splash screen
+        loadSplashPage();
+
+        // Google Maps
         setHashMap();
         createMapView();
 
@@ -222,6 +229,18 @@ public class MainActivity extends Activity {
         map.put("JAVA", BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW));
         map.put("PRODUCT DESIGN", BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_CYAN));
 
+    }
+
+    /**
+     * simple loading overlay on top of main activity
+     * dismisses after 3 seconds while data gets retrieved and map populated in the background
+     *
+     * LOAD TIME: ~3seconds
+     */
+    public void loadSplashPage(){
+        image = (ImageView) findViewById(R.id.imageView1);
+        image.setImageResource(R.drawable.htn_splash);
+        image.postDelayed(new Runnable() { public void run() { image.setVisibility(View.GONE); } }, 3000);
     }
 }
 
